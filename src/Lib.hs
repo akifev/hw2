@@ -89,7 +89,8 @@ runCommand root node ("search" : xs) = search root node xs
 runCommand root node ("cat" : xs) = cat root node xs
 runCommand root node ("write" : xs) = write root node xs
 runCommand root node ("info" : xs) = info root node xs
--- TODO VCS + help
+runCommand root node ("help" : xs) = help root node xs
+-- TODO VCS
 runCommand root node ["exit"] = do
   clear root
   save root
@@ -225,8 +226,8 @@ getType Dir{} = "dir"
 showChildren :: [FilePath] -> IO ()
 showChildren [] = return ()
 showChildren [x] = do
-   putStr "└─ "
-   putStrLn x
+  putStr "└─ "
+  putStrLn x
 showChildren (x : xs) = do
   putStr "├─ "
   putStrLn x
@@ -531,6 +532,21 @@ processDirChildren (Dir children _ _ : xs) =
   let (w, c) = processDirChildren xs
       (innerW, innerC) = processDirChildren children
    in (innerW + w, innerC + c)
+
+help :: Node -> Node -> [String] -> IO ()
+help root node _ = do
+  putStrLn "cd <path> - переходит в указанную директорию;"
+  putStrLn "ls <path> - содержимое указанной директории;"
+  putStrLn "dir - содержимое текущей директории;"
+  putStrLn "mkdir <path> - создаёт новую директорию;"
+  putStrLn "touch <path> - создаёт новый файл;"
+  putStrLn "cat <path> - выводит содержимое файла;"
+  putStrLn "rm <path> - удаляет файл или директорию;"
+  putStrLn "write <path> IN_ONE_WORD_TEXT - дописывает в файл;"
+  putStrLn "search <name> - ищет вхождения по имени файла;"
+  putStrLn "info <path> -выводит информацию о файле или директории;"
+  putStrLn "exit - выходит и записывает состояние;"
+  commandHandler root node
 
 -- TODO VCS
 
